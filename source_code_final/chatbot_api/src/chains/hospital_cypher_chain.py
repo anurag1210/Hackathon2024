@@ -5,13 +5,18 @@ from langchain.prompts import PromptTemplate
 from langchain_community.graphs import Neo4jGraph
 from langchain_openai import ChatOpenAI
 
-HOSPITAL_QA_MODEL = os.getenv("HOSPITAL_QA_MODEL")
-HOSPITAL_CYPHER_MODEL = os.getenv("HOSPITAL_CYPHER_MODEL")
+HOSPITAL_QA_MODEL = "gpt-3.5-turbo-0125" #os.getenv("HOSPITAL_QA_MODEL")
+HOSPITAL_CYPHER_MODEL = "gpt-3.5-turbo-0125" #os.getenv("HOSPITAL_CYPHER_MODEL")
+
+
+NEO4J_URI="neo4j+s://4cc7bb89.databases.neo4j.io"
+NEO4J_USERNAME="neo4j"
+NEO4J_PASSWORD="Od4G5DTW0WpGrsfsBl_eNX5-4whcmGwvdlXfjLKnCeY"
 
 graph = Neo4jGraph(
-    url=os.getenv("NEO4J_URI"),
-    username=os.getenv("NEO4J_USERNAME"),
-    password=os.getenv("NEO4J_PASSWORD"),
+    url=os.getenv(NEO4J_URI),
+    username=os.getenv(NEO4J_USERNAME),
+    password=os.getenv(NEO4J_PASSWORD),
 )
 
 graph.refresh_schema()
@@ -144,6 +149,8 @@ Helpful Answer:
 qa_generation_prompt = PromptTemplate(
     input_variables=["context", "question"], template=qa_generation_template
 )
+
+OPENAI_API_KEY="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"
 
 hospital_cypher_chain = GraphCypherQAChain.from_llm(
     cypher_llm=ChatOpenAI(model=HOSPITAL_CYPHER_MODEL, temperature=0),
