@@ -4,8 +4,8 @@ from models.hospital_rag_query import HospitalQueryInput, HospitalQueryOutput
 from utils.async_utils import async_retry
 
 app = FastAPI(
-    title="Hospital Chatbot",
-    description="Endpoints for a hospital system graph RAG chatbot",
+    title="Worker Information Chatbot",
+    description="Endpoints for a Employeed organization system graph RAG chatbot",
 )
 
 
