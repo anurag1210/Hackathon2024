@@ -150,7 +150,6 @@ qa_generation_prompt = PromptTemplate(
     input_variables=["context", "question"], template=qa_generation_template
 )
 
-OPENAI_API_KEY="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"
 
 hospital_cypher_chain = GraphCypherQAChain.from_llm(
     cypher_llm=ChatOpenAI(model=HOSPITAL_CYPHER_MODEL, temperature=0),
