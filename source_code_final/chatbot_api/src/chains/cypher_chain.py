@@ -29,6 +29,8 @@ Instructions:
 Use only the provided relationship types and properties in the schema.
 Do not use any other relationship types or properties that are not provided.
 
+GIVE CYPHER QUERY IN RESPONSE AS WELL
+
 Schema:
 {schema}
 
@@ -151,7 +153,7 @@ qa_generation_prompt = PromptTemplate(
 )
 
 
-hospital_cypher_chain = GraphCypherQAChain.from_llm(
+cypher_chain = GraphCypherQAChain.from_llm(
     cypher_llm=ChatOpenAI(model=HOSPITAL_CYPHER_MODEL, temperature=0),
     qa_llm=ChatOpenAI(model=HOSPITAL_QA_MODEL, temperature=0),
     graph=graph,

@@ -1,9 +1,9 @@
 import os
 
-from chains.hospital_cypher_chain import hospital_cypher_chain
-from chains.hospital_review_chain import reviews_vector_chain
-from chains.worker_review_chain import worker_vector_chain
-from chains.reservation_chain import reservation_chain
+from chains.cypher_chain import cypher_chain
+from chains.review_chain import reviews_vector_chain
+from chains.worker_chain import worker_vector_chain
+from chains.reservation_v_review_chain import reservation_vector_chain
 
 from langchain import hub
 from langchain.agents import AgentExecutor, Tool, create_openai_functions_agent
@@ -35,7 +35,7 @@ tools = [
     ),
     Tool(
         name="Graph",
-        func=hospital_cypher_chain.invoke,
+        func=cypher_chain.invoke,
         description="""Useful for answering questions about patients,
         physicians, hospitals, insurance payers, patient review
         statistics, and hospital visit details. Use the entire prompt as
@@ -45,39 +45,20 @@ tools = [
         """,
     ),
     Tool(
-        name="Waits",
-        func=get_current_wait_times,
-        description="""Use when asked about current wait times
-        at a specific hospital. This tool can only get the current
-        wait time at a hospital and does not have any information about
-        aggregate or historical wait times. Do not pass the word "hospital"
-        as input, only the hospital name itself. For example, if the prompt
-        is "What is the current wait time at Jordan Inc Hospital?", the
-        input should be "Jordan Inc".
-        """,
-    ),
-    Tool(
-        name="Availability",
-        func=get_most_available_hospital,
-        description="""
-        Use when you need to find out which hospital has the shortest
-        wait time. This tool does not have any information about aggregate
-        or historical wait times. This tool returns a dictionary with the
-        hospital name as the key and the wait time in minutes as the value.
-        """,
-    ),
-    Tool(
         name="Reservation",
-        func=reservation_chain.invoke,
+        func=reservation_vector_chain.invoke,
         description="""
         Use when you need to find out about reservations made my employees.
         Also if user asks you to reserve a seat near a specific employee, then wait for 2 secs
         then respond back with a exact seat number from the context provided that you booked. 
         To find a bookable seat, check where the requested employee is seated and get a seat in the same pproeprty and floor
-    
-        Or if the user asks you to book a particular seat and date then say it's booked it.
         
-        This tool does not have any information about aggregate or any other department data.
+        "Get all reservations?", then input should be nothing and it should find all reservations from neo4j cypher
+        "Get me a seat near PersonA?", then input should be just PersonA, which should first find personA's EMP_ID and
+         then using that EMP_ID, it should find the reservation using that EMP_ID = RESERVED_BY in reservation. And then 
+        find a similar seat with the same property floor as Reservations. Do this all using NEo4j Cypher
+        
+        IF RESPONSE IS THAN 1024 characters. Ommit the response to 1000charcters. THIS IS IMPORTANT
         """,
     ),
     Tool(
@@ -85,7 +66,7 @@ tools = [
         func=worker_vector_chain.invoke,
         description="""
         Use when you need to find out about any information about employees.
-        But do not give his review details.
+        But do not give his review details. 
         
         This tool does not have any information about aggregate or any other department data.
         """,

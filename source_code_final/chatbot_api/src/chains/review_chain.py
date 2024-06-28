@@ -20,43 +20,36 @@ neo4j_vector_index = Neo4jVector.from_existing_graph(
     index_name="reviews",
     node_label="Review",
     text_node_properties=[
-        "physician_name",
-        "patient_name",
-        "text",
-        "hospital_name",
+        "DEP_ID",
+        "REVIEW_ID"
     ],
     embedding_node_property="embedding",
 )
 
 review_template = """Your job is to use employee
-information from the context to answer questions about any thing related to the employee the firm.
-
-And answer any questions related to reservations, check the Reservations table and Property Table
-
+reviews to answer questions about their experience in the firm.
 Use the following context to answer questions.
-Be as detailed as possible, but only answers whats asked for, but don't make up any information
+Be as detailed as possible, but don't make up any information
 that's not from the context. If you don't know an answer,
 say you don't know.
 
-
-
-
-Worker details table:
-EMP_ID,EMP_NAME,LOCN,MGR,GRADE,LOB
-A123456,John Doe,Bouremouth,,CEO,AWM
-B123456,Man Doe,Bouremouth,1,MD,BCG
-C123456,Bret Lee,Bouremouth,4,MD,BCG
-D123456,Sachin T,Chicago,3,VP,CCB
-E123456,James Bond,Chicago,7,VP,BCG
-F123456,Tim Cook,Chicago,2,ED,CCB
-G123456,Naruto Uz,Bengaluru,3,Assoc,AWM
-H123456,Stacy Hull,Bengaluru,4,Assoc,CCB
-I123456,Ode Ode,Hong Kong,4,Assoc,CCB
-J123456,Random,Hong Kong,8,Assoc,DWM
+REVIEW_ID,DEP_ID,REVIEW
+1,AWM,The management is very supportive and always encourages personal growth.
+2,CCB,I feel the workload is quite heavy, but the team collaboration makes it manageable.
+3,CCB,The work environment is very positive, and there are plenty of opportunities for advancement.
+4,DWM,I think there should be more transparency in the decision-making process.
+5,CCB,The benefits and compensation are fair, but the work-life balance could be better.
+6,DWM,I appreciate the regular training sessions which help us stay updated with industry trends.
+7,AWM,The company culture is inclusive and welcoming, making it a great place to work.
+8,BCG,Sometimes the communication between departments can be improved.
+9,BCG,I have a lot of autonomy in my role, which I really enjoy.
+10,AWM,The resources provided for project completion are very bad and not very helpful.
 
 
 {context}
 """
+
+
 
 review_system_prompt = SystemMessagePromptTemplate(
     prompt=PromptTemplate(
@@ -73,9 +66,9 @@ review_prompt = ChatPromptTemplate(
     input_variables=["context", "question"], messages=messages
 )
 
-worker_vector_chain = RetrievalQA.from_chain_type(
+reviews_vector_chain = RetrievalQA.from_chain_type(
     llm=ChatOpenAI(model=HOSPITAL_QA_MODEL, temperature=0),
     chain_type="stuff",
     retriever=neo4j_vector_index.as_retriever(k=12),
 )
-worker_vector_chain.combine_documents_chain.llm_chain.prompt = review_prompt
+reviews_vector_chain.combine_documents_chain.llm_chain.prompt = review_prompt

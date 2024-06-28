@@ -1,13 +1,13 @@
 EMP_ID,EMP_NAME,LOCN,MGR,GRADE,LOB
-A123456,John Doe,Bouremouth,,CEO,AWM
-B123456,Man Doe,Bouremouth,1,MD,BCG
-C123456,Bret Lee,Bouremouth,4,MD,BCG
-D123456,Sachin T,Chicago,3,VP,CCB
-E123456,James Bond,Chicago,7,VP,BCG
-F123456,Tim Cook,Chicago,2,ED,CCB
-G123456,Naruto Uz,Bengaluru,3,Assoc,AWM
-H123456,Stacy Hull,Bengaluru,4,Assoc,CCB
-I123456,Ode Ode,Hong Kong,4,Assoc,CCB
-J123456,Random,Hong Kong,8,Assoc,DWM
+A123456,John Doe,Bouremouth,0,CEO,AWM
+B123456,Man Doe,Bouremouth,A123456,MD,BCG
+C123456,Bret Lee,Bouremouth,D123456,MD,BCG
+D123456,Sachin T,Chicago,C123456,VP,CCB
+E123456,James Bond,Chicago,G123456,VP,BCG
+F123456,Tim Cook,Chicago,B123456,ED,CCB
+G123456,Naruto Uz,Bengaluru,C123456,Assoc,AWM
+H123456,Stacy Hull,Bengaluru,D123456,Assoc,CCB
+I123456,Ode Ode,Hong Kong,123456,Assoc,CCB
+J123456,Random,Hong Kong,H123456,Assoc,DWM
 
 
