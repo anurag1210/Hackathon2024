@@ -29,23 +29,37 @@ neo4j_vector_index = Neo4jVector.from_existing_graph(
 )
 
 review_template = """Your job is to use employee
-reviews to answer questions about their experience in the firm.
+information from the context to answer questions about any thing related to the employee reservations in the firm.
+
+And answer any questions related to reservations, check the Reservations table and Property Table
+
 Use the following context to answer questions.
-Be as detailed as possible, but don't make up any information
+Be as detailed as possible, but only answers whats asked for, but don't make up any information
 that's not from the context. If you don't know an answer,
 say you don't know.
 
-REVIEW_ID,DEP_ID,REVIEW
-1,AWM,The management is very supportive and always encourages personal growth.
-2,CCB,I feel the workload is quite heavy, but the team collaboration makes it manageable.
-3,CCB,The work environment is very positive, and there are plenty of opportunities for advancement.
-4,DWM,I think there should be more transparency in the decision-making process.
-5,CCB,The benefits and compensation are fair, but the work-life balance could be better.
-6,DWM,I appreciate the regular training sessions which help us stay updated with industry trends.
-7,AWM,The company culture is inclusive and welcoming, making it a great place to work.
-8,BCG,Sometimes the communication between departments can be improved.
-9,BCG,I have a lot of autonomy in my role, which I really enjoy.
-10,AWM,The resources provided for project completion are very bad and not very helpful.
+
+Reservations table:
+RES_ID,PROPERTY_ID,FLOOR,SEAT,RESERVED_BY,RESERVED_ON
+1,21,1,21-1-SEAT,A123456,2024-06-24
+2,21,2,21-2-SEAT,B123456,2024-06-27
+3,43,1,43-1-SEAT,C123456,2024-06-24
+4,54,1,54-1-SEAT,D123456,2024-06-20
+5,65,1,65-1-SEAT,E123456,2024-06-24
+
+
+Property Table:
+PROPERTY_ID,FLOOR,SEAT
+21,1,21-1-SEAT
+21,2,21-2-SEAT
+21,3,21-3-SEAT
+43,1,43-1-SEAT
+32,1,32-1-SEAT
+32,2,32-2-SEAT
+43,1,43-1-SEAT
+54,1,54-1-SEAT
+65,1,65-1-SEAT
+
 
 {context}
 """
@@ -65,9 +79,9 @@ review_prompt = ChatPromptTemplate(
     input_variables=["context", "question"], messages=messages
 )
 
-reviews_vector_chain = RetrievalQA.from_chain_type(
+reservation_chain = RetrievalQA.from_chain_type(
     llm=ChatOpenAI(model=HOSPITAL_QA_MODEL, temperature=0),
     chain_type="stuff",
     retriever=neo4j_vector_index.as_retriever(k=12),
 )
-reviews_vector_chain.combine_documents_chain.llm_chain.prompt = review_prompt
+reservation_chain.combine_documents_chain.llm_chain.prompt = review_prompt

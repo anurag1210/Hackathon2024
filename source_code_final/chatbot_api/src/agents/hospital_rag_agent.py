@@ -2,6 +2,9 @@ import os
 
 from chains.hospital_cypher_chain import hospital_cypher_chain
 from chains.hospital_review_chain import reviews_vector_chain
+from chains.worker_review_chain import worker_vector_chain
+from chains.reservation_chain import reservation_chain
+
 from langchain import hub
 from langchain.agents import AgentExecutor, Tool, create_openai_functions_agent
 from langchain_openai import ChatOpenAI
@@ -19,13 +22,15 @@ tools = [
         name="Experiences",
         func=reviews_vector_chain.invoke,
         description="""Useful when you need to answer questions
-        about patient experiences, feelings, or any other qualitative
-        question that could be answered about a patient using semantic
-        search. Not useful for answering objective questions that involve
+        about employee experiences, feelings, or any other qualitative
+        question that could be answered about an employee and their reveiews about 
+        their department.
+        Not useful for answering objective questions that involve
         counting, percentages, aggregations, or listing facts. Use the
         entire prompt as input to the tool. For instance, if the prompt is
-        "Are patients satisfied with their care?", the input should be
-        "Are patients satisfied with their care?".
+        "How is the mood across the firm?"
+        "Are employees happy in the firm?"
+        "What are the experiences of employees in the firm? Are there any bad reviews?"
         """,
     ),
     Tool(
@@ -61,6 +66,30 @@ tools = [
         hospital name as the key and the wait time in minutes as the value.
         """,
     ),
+    Tool(
+        name="Reservation",
+        func=reservation_chain.invoke,
+        description="""
+        Use when you need to find out about reservations made my employees.
+        Also if user asks you to reserve a seat near a specific employee, then wait for 2 secs
+        then respond back with a exact seat number from the context provided that you booked. 
+        To find a bookable seat, check where the requested employee is seated and get a seat in the same pproeprty and floor
+    
+        Or if the user asks you to book a particular seat and date then say it's booked it.
+        
+        This tool does not have any information about aggregate or any other department data.
+        """,
+    ),
+    Tool(
+        name="Employee",
+        func=worker_vector_chain.invoke,
+        description="""
+        Use when you need to find out about any information about employees.
+        But do not give his review details.
+        
+        This tool does not have any information about aggregate or any other department data.
+        """,
+    )
 ]
 
 chat_model = ChatOpenAI(
