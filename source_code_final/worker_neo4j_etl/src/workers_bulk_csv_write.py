@@ -4,10 +4,10 @@ import os
 from neo4j import GraphDatabase
 # from retry import retry
 
-WORKER_CSV_PATH = "workers.csv" #os.getenv("HOSPITALS_CSV_PATH")
-PROPERTY_CSV_PATH = "property.csv" #os.getenv("PAYERS_CSV_PATH")
-RESERVATION_CSV_PATH = "reservation.csv" #os.getenv("PHYSICIANS_CSV_PATH")
-WORKER_REVIEW_CSV_PATH = "worker_review.csv" #os.getenv("PATIENTS_CSV_PATH")
+WORKER_CSV_PATH = "https://github.com/anurag1210/Hackathon2024/blob/main/source_code_final/worker_neo4j_etl/src/workers.csv" #os.getenv("HOSPITALS_CSV_PATH")
+PROPERTY_CSV_PATH = "https://github.com/anurag1210/Hackathon2024/blob/main/source_code_final/worker_neo4j_etl/src/property.csv" #os.getenv("PAYERS_CSV_PATH")
+RESERVATION_CSV_PATH = "https://github.com/anurag1210/Hackathon2024/blob/main/source_code_final/worker_neo4j_etl/src/reservation.csv" #os.getenv("PHYSICIANS_CSV_PATH")
+WORKER_REVIEW_CSV_PATH = "https://github.com/anurag1210/Hackathon2024/blob/main/source_code_final/worker_neo4j_etl/src/worker_review.csv" #os.getenv("PATIENTS_CSV_PATH")
 
 NEO4J_URI = os.getenv("NEO4J_URI")
 NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
@@ -39,10 +39,10 @@ def load_all_graph_from_csv() -> None:
         NEO4J_URI, auth=(NEO4J_USERNAME, NEO4J_PASSWORD)
     )
 
-    LOGGER.info("Setting uniqueness constraints on nodes")
-    with driver.session(database="neo4j") as session:
-        for node in NODES:
-            session.execute_write(_set_uniqueness_constraints, node)
+    # LOGGER.info("Setting uniqueness constraints on nodes")
+    # with driver.session(database="neo4j") as session:
+    #     for node in NODES:
+    #         session.execute_write(_set_uniqueness_constraints, node)
 
     LOGGER.info("Loading worker nodes")
     with driver.session(database="neo4j") as session:
@@ -54,7 +54,7 @@ def load_all_graph_from_csv() -> None:
                             LOCN: workers.LOCN,
                             MGR: workers.MGR,
                             GRADE: toInteger(workers.GRADE),
-                            LOB: workers.LOB,
+                            LOB: workers.LOB
                             }});
         """
         _ = session.run(query, {})
